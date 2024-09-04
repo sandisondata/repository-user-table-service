@@ -65,12 +65,7 @@ const create = (query, createData) => __awaiter(void 0, void 0, void 0, function
     }));
     debug.write(node_debug_1.MessageType.Step, 'Creating row...');
     const row = (yield (0, database_helpers_1.createRow)(query, tableName, createData, columnNames));
-    const createdRow = Object.assign({ user: user, table: table }, {
-        can_create: row.can_create,
-        can_read: row.can_read,
-        can_update: row.can_update,
-        can_delete: row.can_delete,
-    });
+    const createdRow = Object.assign({ user: user, table: table }, (0, node_utilities_1.pick)(row, dataColumnNames));
     debug.write(node_debug_1.MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
     return createdRow;
 });

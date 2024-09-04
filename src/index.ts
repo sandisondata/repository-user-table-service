@@ -71,12 +71,7 @@ export const create = async (query: Query, createData: CreateData) => {
   )) as Row;
   const createdRow: CreatedRow = Object.assign(
     { user: user, table: table },
-    {
-      can_create: row.can_create,
-      can_read: row.can_read,
-      can_update: row.can_update,
-      can_delete: row.can_delete,
-    },
+    pick(row, dataColumnNames) as Required<Data>,
   );
   debug.write(MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
   return createdRow;

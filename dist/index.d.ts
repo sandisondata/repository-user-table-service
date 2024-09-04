@@ -18,7 +18,7 @@ export type CreatedRow = {
 } & Required<Data>;
 export type Row = PrimaryKey & Required<Data>;
 export type UpdateData = Partial<Data>;
-export type UpdatedRow = Required<PrimaryKey> & Required<Data>;
+export type UpdatedRow = PrimaryKey & Required<Data>;
 export declare const create: (query: Query, createData: CreateData) => Promise<CreatedRow>;
 export declare const find: (query: Query) => Promise<Row[]>;
 export declare const findOne: (query: Query, primaryKey: PrimaryKey) => Promise<Row>;
