@@ -17,8 +17,7 @@
     "node-debug": "github:gwfortington/node-debug",
     "node-utilities": "github:gwfortington/node-utilities",
     "repository-table-service": "github:sandisondata/repository-table-service",
-    "repository-user-service": "github:sandisondata/repository-user-service",
-    "uuid": "^10.0.0"
+    "repository-user-service": "github:sandisondata/repository-user-service"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.6",

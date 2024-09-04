@@ -56,15 +56,21 @@ const create = (query, createData) => __awaiter(void 0, void 0, void 0, function
     debug.write(node_debug_1.MessageType.Step, 'Checking primary key...');
     yield (0, database_helpers_1.checkPrimaryKey)(query, tableName, instanceName, primaryKey);
     debug.write(node_debug_1.MessageType.Step, 'Finding user...');
-    yield userService.findOne(query, {
-        user_uuid: createData.user_uuid,
-    });
+    const user = (yield userService.findOne(query, {
+        uuid: createData.user_uuid,
+    }));
     debug.write(node_debug_1.MessageType.Step, 'Finding table...');
-    yield tableService.findOne(query, {
-        table_uuid: createData.table_uuid,
-    });
+    const table = (yield tableService.findOne(query, {
+        uuid: createData.table_uuid,
+    }));
     debug.write(node_debug_1.MessageType.Step, 'Creating row...');
-    const createdRow = (yield (0, database_helpers_1.createRow)(query, tableName, createData, columnNames));
+    const row = (yield (0, database_helpers_1.createRow)(query, tableName, createData, columnNames));
+    const createdRow = Object.assign({ user: user, table: table }, {
+        can_create: row.can_create,
+        can_read: row.can_read,
+        can_update: row.can_update,
+        can_delete: row.can_delete,
+    });
     debug.write(node_debug_1.MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
     return createdRow;
 });

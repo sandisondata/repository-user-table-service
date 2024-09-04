@@ -34,8 +34,15 @@ export type Data = {
 };
 
 export type CreateData = PrimaryKey & Data;
+export type CreatedRow = {
+  user: userService.Row;
+  table: tableService.Row;
+} & Required<Data>;
+
 export type Row = PrimaryKey & Required<Data>;
+
 export type UpdateData = Partial<Data>;
+export type UpdatedRow = PrimaryKey & Required<Data>;
 
 export const create = async (query: Query, createData: CreateData) => {
   const debug = new Debug(`${debugSource}.create`);
@@ -48,20 +55,29 @@ export const create = async (query: Query, createData: CreateData) => {
   debug.write(MessageType.Step, 'Checking primary key...');
   await checkPrimaryKey(query, tableName, instanceName, primaryKey);
   debug.write(MessageType.Step, 'Finding user...');
-  await userService.findOne(query, {
-    user_uuid: createData.user_uuid,
-  });
+  const user = (await userService.findOne(query, {
+    uuid: createData.user_uuid,
+  })) as userService.Row;
   debug.write(MessageType.Step, 'Finding table...');
-  await tableService.findOne(query, {
-    table_uuid: createData.table_uuid,
-  });
+  const table = (await tableService.findOne(query, {
+    uuid: createData.table_uuid,
+  })) as tableService.Row;
   debug.write(MessageType.Step, 'Creating row...');
-  const createdRow = (await createRow(
+  const row = (await createRow(
     query,
     tableName,
     createData,
     columnNames,
   )) as Row;
+  const createdRow: CreatedRow = Object.assign(
+    { user: user, table: table },
+    {
+      can_create: row.can_create,
+      can_read: row.can_read,
+      can_update: row.can_update,
+      can_delete: row.can_delete,
+    },
+  );
   debug.write(MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
   return createdRow;
 };
@@ -118,7 +134,7 @@ export const update = async (
   debug.write(MessageType.Value, `row=${JSON.stringify(row)}`);
   const mergedRow: Row = Object.assign({}, row, updateData);
   debug.write(MessageType.Value, `mergedRow=${JSON.stringify(mergedRow)}`);
-  let updatedRow: Row = Object.assign({}, mergedRow);
+  let updatedRow: UpdatedRow = Object.assign({}, mergedRow);
   if (
     !objectsEqual(pick(mergedRow, dataColumnNames), pick(row, dataColumnNames))
   ) {
