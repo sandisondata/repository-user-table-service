@@ -1,9 +1,12 @@
 import { Query } from 'database';
 import * as tableService from 'repository-table-service';
 import * as userService from 'repository-user-service';
-export type PrimaryKey = {
+export type PrimaryKey<Populate extends boolean = false> = Populate extends false ? {
     user_uuid: string;
     table_uuid: string;
+} : {
+    user: userService.Row;
+    table: tableService.Row;
 };
 export type Data = {
     can_create?: boolean;
@@ -12,10 +15,7 @@ export type Data = {
     can_delete?: boolean;
 };
 export type CreateData = PrimaryKey & Data;
-export type CreatedRow = {
-    user: userService.Row;
-    table: tableService.Row;
-} & Required<Data>;
+export type CreatedRow = PrimaryKey<true> & Required<Data>;
 export type Row = PrimaryKey & Required<Data>;
 export type UpdateData = Partial<Data>;
 export type UpdatedRow = Row;

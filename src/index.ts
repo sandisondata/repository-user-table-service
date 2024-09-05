@@ -21,10 +21,16 @@ const primaryKeyColumnNames = ['user_uuid', 'table_uuid'];
 const dataColumnNames = ['can_create', 'can_read', 'can_update', 'can_delete'];
 const columnNames = [...primaryKeyColumnNames, ...dataColumnNames];
 
-export type PrimaryKey = {
-  user_uuid: string;
-  table_uuid: string;
-};
+export type PrimaryKey<Populate extends boolean = false> =
+  Populate extends false
+    ? {
+        user_uuid: string;
+        table_uuid: string;
+      }
+    : {
+        user: userService.Row;
+        table: tableService.Row;
+      };
 
 export type Data = {
   can_create?: boolean;
@@ -34,10 +40,7 @@ export type Data = {
 };
 
 export type CreateData = PrimaryKey & Data;
-export type CreatedRow = {
-  user: userService.Row;
-  table: tableService.Row;
-} & Required<Data>;
+export type CreatedRow = PrimaryKey<true> & Required<Data>;
 
 export type Row = PrimaryKey & Required<Data>;
 
