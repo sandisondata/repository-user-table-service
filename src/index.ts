@@ -40,9 +40,10 @@ export type Data = {
 };
 
 export type CreateData = PrimaryKey & Data;
-export type CreatedRow = PrimaryKey<true> & Required<Data>;
+export type CreatedRow = Row<true>;
 
-export type Row = PrimaryKey & Required<Data>;
+export type Row<Populate extends boolean = false> = PrimaryKey<Populate> &
+  Required<Data>;
 
 export type UpdateData = Partial<Data>;
 export type UpdatedRow = Row;

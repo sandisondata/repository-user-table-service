@@ -15,12 +15,12 @@ export type Data = {
     can_delete?: boolean;
 };
 export type CreateData = PrimaryKey & Data;
-export type CreatedRow = PrimaryKey<true> & Required<Data>;
-export type Row = PrimaryKey & Required<Data>;
+export type CreatedRow = Row<true>;
+export type Row<Populate extends boolean = false> = PrimaryKey<Populate> & Required<Data>;
 export type UpdateData = Partial<Data>;
 export type UpdatedRow = Row;
 export declare const create: (query: Query, createData: CreateData) => Promise<CreatedRow>;
-export declare const find: (query: Query) => Promise<Row[]>;
-export declare const findOne: (query: Query, primaryKey: PrimaryKey) => Promise<Row>;
+export declare const find: (query: Query) => Promise<Row<false>[]>;
+export declare const findOne: (query: Query, primaryKey: PrimaryKey) => Promise<Row<false>>;
 export declare const update: (query: Query, primaryKey: PrimaryKey, updateData: UpdateData) => Promise<UpdatedRow>;
 export declare const delete_: (query: Query, primaryKey: PrimaryKey) => Promise<void>;
