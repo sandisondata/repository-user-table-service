@@ -1,7 +1,7 @@
 import { Query } from 'database';
 import * as tableService from 'repository-table-service';
 import * as userService from 'repository-user-service';
-export type PrimaryKey<Populate extends boolean = false> = Populate extends false ? {
+export type PrimaryKey<Populated extends boolean = false> = Populated extends false ? {
     user_uuid: string;
     table_uuid: string;
 } : {
@@ -16,7 +16,7 @@ export type Data = {
 };
 export type CreateData = PrimaryKey & Data;
 export type CreatedRow = Row<true>;
-export type Row<Populate extends boolean = false> = PrimaryKey<Populate> & Required<Data>;
+export type Row<Populated extends boolean = false> = PrimaryKey<Populated> & Required<Data>;
 export type UpdateData = Partial<Data>;
 export type UpdatedRow = Row;
 export declare const create: (query: Query, createData: CreateData) => Promise<CreatedRow>;
