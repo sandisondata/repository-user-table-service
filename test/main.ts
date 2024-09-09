@@ -10,20 +10,17 @@ import { create, delete_, find, findOne, update } from '../dist';
 describe('main', (suiteContext) => {
   Debug.initialise(true);
   let database: Database;
-  let user: userService.CreatedRow;
-  let table: tableService.CreatedRow;
+  let user: userService.Row;
+  let table: tableService.Row;
   before(async () => {
     const debug = new Debug(`${suiteContext.name}.before`);
     debug.write(MessageType.Entry);
     database = Database.getInstance();
-    user = (await userService.create(
-      database.query,
-      {},
-    )) as userService.CreatedRow;
+    user = (await userService.create(database.query, {})) as userService.Row;
     table = (await tableService.create(database.query, {
       name: 'widgets',
       singular_name: 'widget',
-    })) as tableService.CreatedRow;
+    })) as tableService.Row;
     debug.write(MessageType.Exit);
   });
   it('create', async (testContext) => {

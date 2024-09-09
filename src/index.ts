@@ -8,8 +8,6 @@ import {
 } from 'database-helpers';
 import { Debug, MessageType } from 'node-debug';
 import { objectsEqual, pick } from 'node-utilities';
-import * as tableService from 'repository-table-service';
-import * as userService from 'repository-user-service';
 
 const debugSource = 'user-table.service';
 const debugRows = 3;
@@ -21,16 +19,10 @@ const primaryKeyColumnNames = ['user_uuid', 'table_uuid'];
 const dataColumnNames = ['can_create', 'can_read', 'can_update', 'can_delete'];
 const columnNames = [...primaryKeyColumnNames, ...dataColumnNames];
 
-export type PrimaryKey<Populated extends boolean = false> =
-  Populated extends false
-    ? {
-        user_uuid: string;
-        table_uuid: string;
-      }
-    : {
-        user: userService.Row;
-        table: tableService.Row;
-      };
+export type PrimaryKey = {
+  user_uuid: string;
+  table_uuid: string;
+};
 
 export type Data = {
   can_create?: boolean;
@@ -40,18 +32,10 @@ export type Data = {
 };
 
 export type CreateData = PrimaryKey & Data;
-export type CreatedRow = Row<true>;
-
-export type Row<Populated extends boolean = false> = PrimaryKey<Populated> &
-  Required<Data>;
-
+export type Row = PrimaryKey & Required<Data>;
 export type UpdateData = Partial<Data>;
-export type UpdatedRow = Row;
 
-export const create = async (
-  query: Query,
-  createData: CreateData,
-): Promise<CreatedRow> => {
+export const create = async (query: Query, createData: CreateData) => {
   const debug = new Debug(`${debugSource}.create`);
   debug.write(MessageType.Entry, `createData=${JSON.stringify(createData)}`);
   const primaryKey: PrimaryKey = {
@@ -61,25 +45,13 @@ export const create = async (
   debug.write(MessageType.Value, `primaryKey=${JSON.stringify(primaryKey)}`);
   debug.write(MessageType.Step, 'Checking primary key...');
   await checkPrimaryKey(query, tableName, instanceName, primaryKey);
-  debug.write(MessageType.Step, 'Finding user...');
-  const user = (await userService.findOne(query, {
-    uuid: createData.user_uuid,
-  })) as userService.Row;
-  debug.write(MessageType.Step, 'Finding table...');
-  const table = (await tableService.findOne(query, {
-    uuid: createData.table_uuid,
-  })) as tableService.Row;
   debug.write(MessageType.Step, 'Creating row...');
-  const row = (await createRow(
+  const createdRow = (await createRow(
     query,
     tableName,
     createData,
     columnNames,
   )) as Row;
-  const createdRow: CreatedRow = Object.assign(
-    { user: user, table: table },
-    pick(row, dataColumnNames) as Required<Data>,
-  );
   debug.write(MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
   return createdRow;
 };
@@ -118,7 +90,7 @@ export const update = async (
   query: Query,
   primaryKey: PrimaryKey,
   updateData: UpdateData,
-): Promise<UpdatedRow> => {
+) => {
   const debug = new Debug(`${debugSource}.update`);
   debug.write(
     MessageType.Entry,

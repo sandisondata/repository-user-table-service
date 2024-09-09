@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,8 +13,6 @@ exports.delete_ = exports.update = exports.findOne = exports.find = exports.crea
 const database_helpers_1 = require("database-helpers");
 const node_debug_1 = require("node-debug");
 const node_utilities_1 = require("node-utilities");
-const tableService = __importStar(require("repository-table-service"));
-const userService = __importStar(require("repository-user-service"));
 const debugSource = 'user-table.service';
 const debugRows = 3;
 const tableName = '_user_tables';
@@ -55,17 +30,8 @@ const create = (query, createData) => __awaiter(void 0, void 0, void 0, function
     debug.write(node_debug_1.MessageType.Value, `primaryKey=${JSON.stringify(primaryKey)}`);
     debug.write(node_debug_1.MessageType.Step, 'Checking primary key...');
     yield (0, database_helpers_1.checkPrimaryKey)(query, tableName, instanceName, primaryKey);
-    debug.write(node_debug_1.MessageType.Step, 'Finding user...');
-    const user = (yield userService.findOne(query, {
-        uuid: createData.user_uuid,
-    }));
-    debug.write(node_debug_1.MessageType.Step, 'Finding table...');
-    const table = (yield tableService.findOne(query, {
-        uuid: createData.table_uuid,
-    }));
     debug.write(node_debug_1.MessageType.Step, 'Creating row...');
-    const row = (yield (0, database_helpers_1.createRow)(query, tableName, createData, columnNames));
-    const createdRow = Object.assign({ user: user, table: table }, (0, node_utilities_1.pick)(row, dataColumnNames));
+    const createdRow = (yield (0, database_helpers_1.createRow)(query, tableName, createData, columnNames));
     debug.write(node_debug_1.MessageType.Exit, `createdRow=${JSON.stringify(createdRow)}`);
     return createdRow;
 });
