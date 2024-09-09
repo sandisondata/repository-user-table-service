@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,6 +36,8 @@ exports.delete_ = exports.update = exports.findOne = exports.find = exports.crea
 const database_helpers_1 = require("database-helpers");
 const node_debug_1 = require("node-debug");
 const node_utilities_1 = require("node-utilities");
+const tableService = __importStar(require("repository-table-service"));
+const userService = __importStar(require("repository-user-service"));
 const debugSource = 'user-table.service';
 const debugRows = 3;
 const tableName = '_user_tables';
@@ -23,6 +48,10 @@ const columnNames = [...primaryKeyColumnNames, ...dataColumnNames];
 const create = (query, createData) => __awaiter(void 0, void 0, void 0, function* () {
     const debug = new node_debug_1.Debug(`${debugSource}.create`);
     debug.write(node_debug_1.MessageType.Entry, `createData=${JSON.stringify(createData)}`);
+    debug.write(node_debug_1.MessageType.Step, 'Finding user...');
+    yield userService.findOne(query, { uuid: createData.user_uuid });
+    debug.write(node_debug_1.MessageType.Step, 'Finding table...');
+    yield tableService.findOne(query, { uuid: createData.table_uuid });
     const primaryKey = {
         user_uuid: createData.user_uuid,
         table_uuid: createData.table_uuid,
@@ -49,6 +78,10 @@ exports.find = find;
 const findOne = (query, primaryKey) => __awaiter(void 0, void 0, void 0, function* () {
     const debug = new node_debug_1.Debug(`${debugSource}.findOne`);
     debug.write(node_debug_1.MessageType.Entry, `primaryKey=${JSON.stringify(primaryKey)}`);
+    debug.write(node_debug_1.MessageType.Step, 'Finding user...');
+    yield userService.findOne(query, { uuid: primaryKey.user_uuid });
+    debug.write(node_debug_1.MessageType.Step, 'Finding table...');
+    yield tableService.findOne(query, { uuid: primaryKey.table_uuid });
     debug.write(node_debug_1.MessageType.Step, 'Finding row by primary key...');
     const row = (yield (0, database_helpers_1.findByPrimaryKey)(query, tableName, instanceName, primaryKey, { columnNames: columnNames }));
     debug.write(node_debug_1.MessageType.Exit, `row=${JSON.stringify(row)}`);
@@ -59,6 +92,10 @@ const update = (query, primaryKey, updateData) => __awaiter(void 0, void 0, void
     const debug = new node_debug_1.Debug(`${debugSource}.update`);
     debug.write(node_debug_1.MessageType.Entry, `primaryKey=${JSON.stringify(primaryKey)};` +
         `updateData=${JSON.stringify(updateData)}`);
+    debug.write(node_debug_1.MessageType.Step, 'Finding user...');
+    yield userService.findOne(query, { uuid: primaryKey.user_uuid });
+    debug.write(node_debug_1.MessageType.Step, 'Finding table...');
+    yield tableService.findOne(query, { uuid: primaryKey.table_uuid });
     debug.write(node_debug_1.MessageType.Step, 'Finding row by primary key...');
     const row = (yield (0, database_helpers_1.findByPrimaryKey)(query, tableName, instanceName, primaryKey, { columnNames: columnNames, forUpdate: true }));
     debug.write(node_debug_1.MessageType.Value, `row=${JSON.stringify(row)}`);
