@@ -107,10 +107,6 @@ export const update = async (
     `primaryKey=${JSON.stringify(primaryKey)};` +
       `updateData=${JSON.stringify(updateData)}`,
   );
-  debug.write(MessageType.Step, 'Finding user...');
-  await userService.findOne(query, { uuid: primaryKey.user_uuid });
-  debug.write(MessageType.Step, 'Finding table...');
-  await tableService.findOne(query, { uuid: primaryKey.table_uuid });
   debug.write(MessageType.Step, 'Finding row by primary key...');
   const row = (await findByPrimaryKey(
     query,
