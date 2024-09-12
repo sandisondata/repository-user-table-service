@@ -15,8 +15,6 @@ const debugSource = 'user-table.service';
 const debugRows = 3;
 
 const tableName = '_user_tables';
-const instanceName = 'user_table';
-
 const primaryKeyColumnNames = ['user_uuid', 'table_uuid'];
 const dataColumnNames = ['can_create', 'can_read', 'can_update', 'can_delete'];
 const columnNames = [...primaryKeyColumnNames, ...dataColumnNames];
@@ -50,7 +48,7 @@ export const create = async (query: Query, createData: CreateData) => {
   };
   debug.write(MessageType.Value, `primaryKey=${JSON.stringify(primaryKey)}`);
   debug.write(MessageType.Step, 'Checking primary key...');
-  await checkPrimaryKey(query, tableName, instanceName, primaryKey);
+  await checkPrimaryKey(query, tableName, primaryKey);
   debug.write(MessageType.Step, 'Creating row...');
   const createdRow = (await createRow(
     query,
@@ -85,13 +83,9 @@ export const findOne = async (query: Query, primaryKey: PrimaryKey) => {
   debug.write(MessageType.Step, 'Finding table...');
   await tableService.findOne(query, { uuid: primaryKey.table_uuid });
   debug.write(MessageType.Step, 'Finding row by primary key...');
-  const row = (await findByPrimaryKey(
-    query,
-    tableName,
-    instanceName,
-    primaryKey,
-    { columnNames: columnNames },
-  )) as Row;
+  const row = (await findByPrimaryKey(query, tableName, primaryKey, {
+    columnNames: columnNames,
+  })) as Row;
   debug.write(MessageType.Exit, `row=${JSON.stringify(row)}`);
   return row;
 };
@@ -108,13 +102,10 @@ export const update = async (
       `updateData=${JSON.stringify(updateData)}`,
   );
   debug.write(MessageType.Step, 'Finding row by primary key...');
-  const row = (await findByPrimaryKey(
-    query,
-    tableName,
-    instanceName,
-    primaryKey,
-    { columnNames: columnNames, forUpdate: true },
-  )) as Row;
+  const row = (await findByPrimaryKey(query, tableName, primaryKey, {
+    columnNames: columnNames,
+    forUpdate: true,
+  })) as Row;
   debug.write(MessageType.Value, `row=${JSON.stringify(row)}`);
   const mergedRow: Row = Object.assign({}, row, updateData);
   debug.write(MessageType.Value, `mergedRow=${JSON.stringify(mergedRow)}`);
@@ -139,7 +130,7 @@ export const delete_ = async (query: Query, primaryKey: PrimaryKey) => {
   const debug = new Debug(`${debugSource}.delete`);
   debug.write(MessageType.Entry, `primaryKey=${JSON.stringify(primaryKey)}`);
   debug.write(MessageType.Step, 'Finding row by primary key...');
-  await findByPrimaryKey(query, tableName, instanceName, primaryKey, {
+  await findByPrimaryKey(query, tableName, primaryKey, {
     forUpdate: true,
   });
   debug.write(MessageType.Step, 'Deleting row...');
