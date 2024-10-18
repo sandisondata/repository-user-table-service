@@ -1,7 +1,7 @@
 {
-  "name": "repository-user-table-service",
+  "name": "system-user-table-service",
   "version": "1.0.0",
-  "description": "Structured Data Repository - User Table Service",
+  "description": "System user table service",
   "author": "Grant Fortington",
   "private": true,
   "license": "MIT",
@@ -12,12 +12,12 @@
     "test": "rimraf --glob \"test/**/*.js\" && tsc -p tsconfig-test.json && node --env-file .test.env --test"
   },
   "dependencies": {
+    "base-service-class": "github:sandisondata/base-service-class",
     "database": "github:sandisondata/database",
     "database-helpers": "github:sandisondata/database-helpers",
     "node-debug": "github:gwfortington/node-debug",
-    "node-utilities": "github:gwfortington/node-utilities",
-    "repository-table-service": "github:sandisondata/repository-table-service",
-    "repository-user-service": "github:sandisondata/repository-user-service"
+    "system-table-service": "github:sandisondata/system-table-service",
+    "system-user-service": "github:sandisondata/system-user-service"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.6",
