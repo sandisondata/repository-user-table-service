@@ -18,20 +18,22 @@ export type Data = {
 };
 
 export type CreateData = PrimaryKey & Data;
-export type Row = Required<PrimaryKey> & Required<Data>;
 export type UpdateData = Partial<Data>;
+export type Row = Required<PrimaryKey> & Required<Data>;
 
 export class Service extends BaseService<
   PrimaryKey,
   CreateData,
-  Row,
-  UpdateData
+  UpdateData,
+  Row
 > {
   async preCreate() {
     const debug = new Debug(`${this.debugSource}.preCreate`);
     debug.write(MessageType.Entry);
     debug.write(MessageType.Step, 'Finding user...');
-    await userService.findOne(this.query, { uuid: this.createData.user_uuid });
+    await userService.findOne(this.query, {
+      uuid: this.createData.user_uuid,
+    });
     debug.write(MessageType.Step, 'Finding table...');
     await tableService.findOne(this.query, {
       uuid: this.createData.table_uuid,

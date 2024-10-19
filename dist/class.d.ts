@@ -11,8 +11,8 @@ export type Data = {
     can_delete?: boolean;
 };
 export type CreateData = PrimaryKey & Data;
-export type Row = Required<PrimaryKey> & Required<Data>;
 export type UpdateData = Partial<Data>;
-export declare class Service extends BaseService<PrimaryKey, CreateData, Row, UpdateData> {
+export type Row = Required<PrimaryKey> & Required<Data>;
+export declare class Service extends BaseService<PrimaryKey, CreateData, UpdateData, Row> {
     preCreate(): Promise<void>;
 }

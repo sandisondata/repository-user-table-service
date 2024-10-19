@@ -20,7 +20,9 @@ class Service extends base_service_class_1.BaseService {
             const debug = new node_debug_1.Debug(`${this.debugSource}.preCreate`);
             debug.write(node_debug_1.MessageType.Entry);
             debug.write(node_debug_1.MessageType.Step, 'Finding user...');
-            yield system_user_service_1.service.findOne(this.query, { uuid: this.createData.user_uuid });
+            yield system_user_service_1.service.findOne(this.query, {
+                uuid: this.createData.user_uuid,
+            });
             debug.write(node_debug_1.MessageType.Step, 'Finding table...');
             yield system_table_service_1.service.findOne(this.query, {
                 uuid: this.createData.table_uuid,

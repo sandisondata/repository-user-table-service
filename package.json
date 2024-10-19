@@ -14,7 +14,6 @@
   "dependencies": {
     "base-service-class": "github:sandisondata/base-service-class",
     "database": "github:sandisondata/database",
-    "database-helpers": "github:sandisondata/database-helpers",
     "node-debug": "github:gwfortington/node-debug",
     "system-table-service": "github:sandisondata/system-table-service",
     "system-user-service": "github:sandisondata/system-user-service"
