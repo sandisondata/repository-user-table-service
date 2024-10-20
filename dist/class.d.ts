@@ -1,10 +1,9 @@
-import { BaseService, Query } from 'base-service-class';
-export { Query };
+import { BaseService } from 'base-service-class';
 export type PrimaryKey = {
     user_uuid: string;
     table_uuid: string;
 };
-export type Data = {
+type Data = {
     can_create?: boolean;
     can_read?: boolean;
     can_update?: boolean;
@@ -16,3 +15,4 @@ export type Row = Required<PrimaryKey> & Required<Data>;
 export declare class Service extends BaseService<PrimaryKey, CreateData, UpdateData, Row> {
     preCreate(): Promise<void>;
 }
+export {};

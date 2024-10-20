@@ -1,16 +1,14 @@
-import { BaseService, Query } from 'base-service-class';
+import { BaseService } from 'base-service-class';
 import { Debug, MessageType } from 'node-debug';
 import { service as tableService } from 'system-table-service';
 import { service as userService } from 'system-user-service';
-
-export { Query };
 
 export type PrimaryKey = {
   user_uuid: string;
   table_uuid: string;
 };
 
-export type Data = {
+type Data = {
   can_create?: boolean;
   can_read?: boolean;
   can_update?: boolean;
@@ -30,14 +28,20 @@ export class Service extends BaseService<
   async preCreate() {
     const debug = new Debug(`${this.debugSource}.preCreate`);
     debug.write(MessageType.Entry);
+    const userPrimaryKey = { uuid: this.createData.user_uuid };
+    debug.write(
+      MessageType.Value,
+      `userPrimaryKey=${JSON.stringify(userPrimaryKey)}`,
+    );
     debug.write(MessageType.Step, 'Finding user...');
-    await userService.findOne(this.query, {
-      uuid: this.createData.user_uuid,
-    });
+    await userService.findOne(this.query, userPrimaryKey);
+    const tablePrimaryKey = { uuid: this.createData.table_uuid };
+    debug.write(
+      MessageType.Value,
+      `tablePrimaryKey=${JSON.stringify(tablePrimaryKey)}`,
+    );
     debug.write(MessageType.Step, 'Finding table...');
-    await tableService.findOne(this.query, {
-      uuid: this.createData.table_uuid,
-    });
+    await tableService.findOne(this.query, tablePrimaryKey);
     debug.write(MessageType.Exit);
   }
 }

@@ -19,14 +19,14 @@ class Service extends base_service_class_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const debug = new node_debug_1.Debug(`${this.debugSource}.preCreate`);
             debug.write(node_debug_1.MessageType.Entry);
+            const userPrimaryKey = { uuid: this.createData.user_uuid };
+            debug.write(node_debug_1.MessageType.Value, `userPrimaryKey=${JSON.stringify(userPrimaryKey)}`);
             debug.write(node_debug_1.MessageType.Step, 'Finding user...');
-            yield system_user_service_1.service.findOne(this.query, {
-                uuid: this.createData.user_uuid,
-            });
+            yield system_user_service_1.service.findOne(this.query, userPrimaryKey);
+            const tablePrimaryKey = { uuid: this.createData.table_uuid };
+            debug.write(node_debug_1.MessageType.Value, `tablePrimaryKey=${JSON.stringify(tablePrimaryKey)}`);
             debug.write(node_debug_1.MessageType.Step, 'Finding table...');
-            yield system_table_service_1.service.findOne(this.query, {
-                uuid: this.createData.table_uuid,
-            });
+            yield system_table_service_1.service.findOne(this.query, tablePrimaryKey);
             debug.write(node_debug_1.MessageType.Exit);
         });
     }
