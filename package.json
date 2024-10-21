@@ -1,7 +1,7 @@
 {
   "name": "system-user-table-service",
   "version": "1.0.0",
-  "description": "System user table service",
+  "description": "System User Table Service",
   "author": "Grant Fortington",
   "private": true,
   "license": "MIT",
